@@ -17,6 +17,12 @@ warnings.filterwarnings(
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_PATH = PROJECT_ROOT / "data" / "processed" / "churn_model_dataset.csv"
+OUTPUT_PATH = (
+    PROJECT_ROOT
+    / "data"
+    / "processed"
+    / "validation_targeting_metrics.csv"
+)
 
 TARGET = "target_disengaged"
 ID_COLS = ["account_id", "snapshot_date", "split", TARGET]
@@ -119,9 +125,11 @@ def main():
     scores = model.predict_proba(X_val)[:, 1]
 
     fractions = [0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30]
-    rows = [evaluate_fraction(y_val, scores, f) for f in fractions]
+    result = pd.DataFrame(
+        [evaluate_fraction(y_val, scores, f) for f in fractions]
+    )
 
-    result = pd.DataFrame(rows)
+    result.to_csv(OUTPUT_PATH, index=False)
 
     print("\nValidation targeting trade-offs")
     print("-------------------------------")
@@ -140,6 +148,7 @@ def main():
 
     print(f"\nValidation prevalence: {y_val.mean():.2%}")
     print(f"Validation positives: {int(y_val.sum()):,}")
+    print(f"Saved metrics: {OUTPUT_PATH}")
 
 
 if __name__ == "__main__":
