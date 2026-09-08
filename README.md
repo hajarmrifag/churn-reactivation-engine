@@ -101,7 +101,28 @@ Because the positive class is rare, **PR-AUC, precision, recall and lift** are e
 
 Targeting only the highest-risk **10% of customers captured 70.85% of all observed disengagement cases** in the out-of-time test period.
 
-## Targeting trade-off
+
+## Purged temporal robustness check
+
+Because each target uses customer activity from the 90 days following a snapshot, adjacent temporal splits can have overlapping outcome windows. As a stricter robustness check, training observations were removed whenever their full 90-day outcome window extended into the evaluation period.
+
+| Metric | Purged validation | Purged locked test |
+|---|---:|---:|
+| Training rows | 35,823 | 61,045 |
+| Last training snapshot | 1997-10-01 | 1998-04-01 |
+| ROC-AUC | 0.8991 | **0.9202** |
+| PR-AUC | 0.1868 | **0.1779** |
+| Top-10% precision | 17.42% | **10.02%** |
+| Top-10% recall | 61.06% | **66.33%** |
+| Top-10% lift | 6.11x | **6.63x** |
+| Cases captured | 450 / 737 | **132 / 199** |
+
+The purged locked-test ROC-AUC remained close to the original 0.9227 result, while top-decile lift remained strong at 6.63x. This check is reported separately rather than replacing the original locked holdout evaluation.
+
+
+## Validation targeting trade-off
+These figures are validation results used to choose the targeting share; they are separate from the locked-test results above.
+
 
 | Targeted share | Precision | Recall | Lift |
 |---|---:|---:|---:|
