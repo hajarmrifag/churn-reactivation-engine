@@ -2,6 +2,9 @@
 
 An end-to-end banking analytics and machine-learning project that identifies customers at risk of **behavioural disengagement**, ranks them by risk, and converts model output into practical reactivation targeting decisions.
 
+**Live application:** https://finsight-ai-hajar.streamlit.app/  
+**Application repository:** https://github.com/hajarmrifag/finsight-streamlit
+
 The project uses the real anonymized **Berka / PKDD'99 Czech financial dataset**, with more than one million banking transactions across 4,500 accounts.
 
 ## Project objective
