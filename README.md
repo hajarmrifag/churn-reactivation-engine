@@ -7,6 +7,21 @@ An end-to-end banking analytics and machine-learning project that identifies cus
 
 The project uses the real anonymized **Berka / PKDD'99 Czech financial dataset**, with more than one million banking transactions across 4,500 accounts.
 
+## Results at a glance
+
+| Evaluation | ROC-AUC | Top-10% lift | Cases captured in the top 10% |
+| --- | ---: | ---: | ---: |
+| **Purged temporal test** | **0.9202** | **6.63×** | **132 / 199 (66.33%)** |
+| Original temporal holdout | 0.9227 | 7.08× | 141 / 199 (70.85%) |
+
+The stricter purged evaluation removes training observations whose 90-day outcome windows cross into the evaluation period. Both evaluations rank **account-month observations**, not unique customers: an account may appear in multiple months. The target is declining transaction activity, not confirmed account closure. Campaign economics are scenarios, not observed intervention results.
+
+[Explore the live app](https://finsight-ai-hajar.streamlit.app/) · [Validation details](#purged-temporal-robustness-check) · [Run the analysis](#reproduce-the-analysis)
+
+[![FinSight research application overview](https://github.com/hajarmrifag/finsight-streamlit/blob/main/docs/finsight-overview.png?raw=true)](https://finsight-ai-hajar.streamlit.app/)
+
+*FinSight presents the saved research results and campaign scenarios; the modelling pipeline lives in this repository.*
+
 ## Project objective
 
 The source data does not contain a direct customer-churn label. Rather than inventing account closures, this project defines a forward-looking **behavioural disengagement** target from observed transaction activity.
@@ -102,7 +117,7 @@ Because the positive class is rare, **PR-AUC, precision, recall and lift** are e
 | Top-10% lift | **7.08x** |
 | Cases captured | **141 / 199** |
 
-Targeting only the highest-risk **10% of customers captured 70.85% of all observed disengagement cases** in the out-of-time test period.
+Targeting only the highest-risk **10% of account-month observations captured 70.85% of all observed disengagement cases** in the out-of-time test period.
 
 
 ## Purged temporal robustness check
@@ -165,7 +180,7 @@ Permutation importance on the validation period identified these leading predict
 
 These are predictive associations, not causal effects.
 
-## High-risk customer profile
+## High-risk account-month profile
 
 Compared with the remaining 90% of validation observations, the top-10% risk group showed:
 
@@ -179,7 +194,7 @@ The top-10% group had an observed disengagement rate of **17.69%**, compared wit
 
 ## Reactivation action framework
 
-| Action hypothesis | Validation customers | Observed disengagement rate |
+| Action hypothesis | Validation account-month observations | Observed disengagement rate |
 |---|---:|---:|
 | Account health check-in | 983 | 15.16% |
 | Payments re-engagement | 616 | 19.16% |
@@ -229,9 +244,6 @@ churn-reactivation-engine/
 │   ├── analyze_feature_importance.py
 │   ├── profile_risk_segments.py
 │   └── build_reactivation_actions.py
-├── dashboard/
-├── docs/
-├── tests/
 ├── requirements.txt
 └── README.md
 ```
@@ -279,4 +291,4 @@ sqlite3 data/processed/berka.sqlite < sql/01_source_profile.sql
 
 ## Key result
 
-> An out-of-time Gradient Boosting model achieved **0.9227 ROC-AUC** and **7.08x lift in the highest-risk 10%**, capturing **141 of 199 disengagement cases (70.85%)** while targeting only one-tenth of customers.
+> An out-of-time Gradient Boosting model achieved **0.9227 ROC-AUC** and **7.08x lift in the highest-risk 10%**, capturing **141 of 199 disengagement cases (70.85%)** while targeting only one-tenth of account-month observations.
