@@ -1,5 +1,7 @@
 # Churn & Reactivation Decision Engine
 
+[![validation](https://github.com/hajarmrifag/churn-reactivation-engine/actions/workflows/validation.yml/badge.svg)](https://github.com/hajarmrifag/churn-reactivation-engine/actions/workflows/validation.yml)
+
 An end-to-end banking analytics and machine-learning project that identifies customers at risk of **behavioural disengagement**, ranks them by risk, and converts model output into practical reactivation targeting decisions.
 
 **Live application:** https://finsight-ai-hajar.streamlit.app/  
@@ -278,7 +280,7 @@ sqlite3 data/processed/berka.sqlite < sql/01_source_profile.sql
 
 ## Technical stack
 
-**Python · Pandas · NumPy · scikit-learn · SQL · SQLite · Git**
+**Python · Pandas · NumPy · scikit-learn · SQL · SQLite · pytest · GitHub Actions · Git**
 
 ## Methodological notes
 
@@ -288,6 +290,12 @@ sqlite3 data/processed/berka.sqlite < sql/01_source_profile.sql
 - The final test period is opened once and is not used for further tuning.
 - `account_id` is never used as a predictive feature.
 - Campaign economics and reactivation actions are explicitly separated from observed model results because the source data contains no treatment experiment.
+
+## Model governance and automated validation
+
+The repository treats the model as decision support rather than an autonomous customer-action system. The [model card](docs/model-card.md) records the intended use, prohibited uses, data lineage, evaluation design, known limitations, human-oversight expectations, and monitoring plan.
+
+GitHub Actions runs source-independent validation tests on every push and pull request. These tests check targeting-metric calculations, zero-positive edge cases, signed heavy-tail transformations, and the 90-day embargo used to prevent temporal label leakage. The full model cannot be rebuilt in CI because the source CSV files are intentionally excluded from the repository; the README keeps that boundary explicit rather than presenting an unverifiable CI result.
 
 ## Key result
 
